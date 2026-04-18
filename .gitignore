@@ -1,0 +1,64 @@
+# Byte-compiled / optimized
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# PyTorch checkpoints (use Git LFS for these if needed)
+model/checkpoints/*.pth
+model/checkpoints/*.pt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Vivado project files (DO NOT commit these — recreate via TCL scripts)
+*.xpr
+*.runs/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.gen/
+*.bit
+*.ltx
+*.dcp
+
+# Vivado logs
+vivado*.log
+vivado*.jou
+*.wdb
+*.wcfg
+
+# Simulation outputs
+*.vcd
+*.fst
+*.lxt
+sim_build/
+results.xml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary
+*.tmp
+*.bak
+scratch/
+
+# Data files (large)
+data/*.tar.gz
+data/*.zip
+
+# Condensed context (generated file)
+context_for_shaurya.txt
