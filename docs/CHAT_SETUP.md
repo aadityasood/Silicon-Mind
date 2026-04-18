@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  YOU (Adi) — the router between all 4 agents        │
+│  YOU (Aaditya) — the router between all 4 agents    │
 │  You copy outputs from one agent → paste to next    │
 └────────┬──────────┬──────────┬──────────┬───────────┘
          │          │          │          │

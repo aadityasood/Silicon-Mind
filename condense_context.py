@@ -125,7 +125,7 @@ def condense():
     output = f"""=== SILICON MIND PROJECT CONTEXT (Auto-condensed: {timestamp}) ===
 
 PROJECT: Custom FPGA-Based Systolic Array Accelerator for CNN Inference
-TEAM: Adi (CS/AI/ML — software) + Shaurya (ECE — hardware/Verilog)
+TEAM: Aaditya Sood (CS/AI/ML — software) + Shaurya Gupta (ECE — hardware/Verilog)
 PURPOSE: Portfolio for Master's applications (TUM, RWTH Aachen)
 
 CURRENT PHASE: {current_phase}

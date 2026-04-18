@@ -6,7 +6,7 @@
 ## Project Identity
 - **Name:** Silicon Mind  
 - **Goal:** Custom FPGA-Based Systolic Array Accelerator for CNN Inference
-- **Team:** Adi (CS/AI/ML — software stack) + Shaurya (ECE — hardware/Verilog/FPGA)
+- **Team:** Aaditya Sood (CS/AI/ML — software stack) + Shaurya Gupta (ECE — hardware/Verilog/FPGA)
 - **Purpose:** Portfolio project for Master's applications (TUM, RWTH Aachen)
 
 ## Current Phase
@@ -51,13 +51,13 @@ PYNQ Driver (Python) ← AXI Bus ← Systolic Array (Verilog RTL) ← Weights
 <!-- List files currently being worked on -->
 | File | Status | Owner | Description |
 |:-----|:-------|:------|:------------|
-| `model/train.py` | 🔴 Not started | Adi | CNN training script |
-| `model/quantize.py` | 🔴 Not started | Adi | QAT quantization pipeline |
+| `model/train.py` | 🔴 Not started | Aaditya | CNN training script |
+| `model/quantize.py` | 🔴 Not started | Aaditya | QAT quantization pipeline |
 | `rtl/pe.v` | 🔴 Not started | Shaurya | Processing Element |
 | `rtl/systolic_array.v` | 🔴 Not started | Shaurya | NxN systolic array |
 
 ## Interface Specification (HW-SW Contract)
-<!-- This is the CRITICAL bridge between Adi and Shaurya's work -->
+<!-- This is the CRITICAL bridge between Aaditya and Shaurya's work -->
 - **Data Width:** 8 bits (signed INT8: -128 to +127)
 - **Accumulator Width:** 32 bits (signed INT32)
 - **Weight Format:** Row-major, one weight per PE, loaded via control signal

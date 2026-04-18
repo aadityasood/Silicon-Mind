@@ -51,8 +51,8 @@ Input Image → im2col → Tiled MatMul → Systolic Array (FPGA) → Requantize
 
 ## 👥 Team
 
-- **Adi** — AI/ML, software stack, verification
-- **Shaurya** — Hardware design, Verilog RTL, FPGA synthesis
+- **Aaditya Sood** — AI/ML, software stack, verification
+- **Shaurya Gupta** — Hardware design, Verilog RTL, FPGA synthesis
 
 ## 📄 License
 

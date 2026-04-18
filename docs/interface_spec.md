@@ -1,6 +1,6 @@
 # 🔌 Hardware-Software Interface Specification
 <!-- VERSION: 1.0 | LAST UPDATED: 2026-04-18 -->
-<!-- This document is the CONTRACT between Adi (software) and Shaurya (hardware) -->
+<!-- This document is the CONTRACT between Aaditya Sood (software) and Shaurya Gupta (hardware) -->
 <!-- BOTH sides must agree on changes. Update version number on every change. -->
 
 ## 1. Data Types & Widths
@@ -46,7 +46,7 @@ FF    # -1
 # ... (rows 2-3)
 ```
 
-### Python Export Code (Adi writes this)
+### Python Export Code (Aaditya writes this)
 ```python
 def export_weights_to_mem(weight_tensor, filepath):
     """Export INT8 weight tensor to .mem file for Verilog $readmemh"""
@@ -117,7 +117,7 @@ Each layer's output becomes the next layer's input. The ARM CPU (or software in 
 
 ## 9. Verification Contract
 
-**Adi provides:** Test vectors in `.mem` format + expected output in `.mem` format
+**Aaditya provides:** Test vectors in `.mem` format + expected output in `.mem` format
 **Shaurya verifies:** Verilog simulation output matches expected output exactly (bit-for-bit)
 
 Test vector naming:
@@ -135,4 +135,4 @@ verification/test_vectors/
 
 | Version | Date | Change | Author |
 |:--------|:-----|:-------|:-------|
-| 1.0 | 2026-04-18 | Initial specification | Adi + Antigravity |
+| 1.0 | 2026-04-18 | Initial specification | Aaditya Sood + Antigravity |

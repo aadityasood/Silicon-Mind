@@ -4,7 +4,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    YOU (Adi) — The Router                        │
+│                    YOU (Aaditya) — The Router                    │
 │                                                                 │
 │  1. Run condense_context.py → get context blob                  │
 │  2. Paste context + task into Flash chat                        │
