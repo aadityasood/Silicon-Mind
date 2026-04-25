@@ -8,9 +8,14 @@ __pycache__/
 venv/
 env/
 
-# PyTorch checkpoints (use Git LFS for these if needed)
-model/checkpoints/*.pth
-model/checkpoints/*.pt
+# PyTorch checkpoints and model weights (too large for git)
+*.pth
+*.pt
+model/checkpoints/
+
+# MNIST and other dataset raw files (re-downloaded by train.py)
+data/MNIST/
+data/*/raw/
 
 # Jupyter
 .ipynb_checkpoints/
@@ -39,6 +44,12 @@ vivado*.jou
 *.lxt
 sim_build/
 results.xml
+
+# Yosys / Synthesis outputs (Shaurya's tools)
+*_gate.v
+*.blif
+*.json
+synth/*.log
 
 # OS files
 .DS_Store

@@ -1,5 +1,5 @@
 # 🧠 PROJECT CONTEXT — Silicon Mind
-<!-- LAST UPDATED: 2026-04-18 -->
+<!-- LAST UPDATED: 2026-04-25 -->
 <!-- UPDATE THIS FILE after every significant coding session -->
 <!-- ANY agent can read this file to understand the full project state -->
 
@@ -39,22 +39,32 @@ PYNQ Driver (Python) ← AXI Bus ← Systolic Array (Verilog RTL) ← Weights
 | D4 | Hand-crafted Verilog (no HLS/FINN/Vitis AI) | Shows deeper understanding for portfolio | 2026-04-18 |
 | D5 | Board TBD (2-3 days) | All simulation work is board-independent | 2026-04-18 |
 | D6 | Multi-agent coding workflow | Flash writes → Pro audits → Opus final review | 2026-04-18 |
+| D7 | Accept Shaurya's folder structure (sim/, synth/) | Standard FPGA/ASIC conventions, no conflict with verification/ | 2026-04-25 |
+| D8 | 3-branch git workflow (main, dev, hw-dev) | Clear ownership prevents merge conflicts | 2026-04-25 |
 
 ## Completed Work
 - [x] Project plan created (implementation_plan.md)
 - [x] Directory structure set up
 - [x] Context management system built
 - [x] Agent prompt system designed
+- [x] model/train.py written (MNIST CNN)
+- [x] Dual-branch weekly workflow (v2) — reviews dev + hw-dev
+- [x] Git strategy updated for 3-branch model
+- [ ] Train the model (run train.py)
+- [ ] model/quantize.py — QAT pipeline
 - [ ] ... (update as work progresses)
 
 ## Active Files
 <!-- List files currently being worked on -->
-| File | Status | Owner | Description |
-|:-----|:-------|:------|:------------|
-| `model/train.py` | 🔴 Not started | Aaditya | CNN training script |
-| `model/quantize.py` | 🔴 Not started | Aaditya | QAT quantization pipeline |
-| `rtl/pe.v` | 🔴 Not started | Shaurya | Processing Element |
-| `rtl/systolic_array.v` | 🔴 Not started | Shaurya | NxN systolic array |
+| File | Status | Owner | Branch | Description |
+|:-----|:-------|:------|:-------|:------------|
+| `model/train.py` | 🟢 Written | Aaditya | `dev` | CNN training script |
+| `model/quantize.py` | 🔴 Not started | Aaditya | `dev` | QAT quantization pipeline |
+| `rtl/mac.v` | 🟡 Placeholder | Shaurya | `hw-dev` | MAC unit |
+| `rtl/pe.v` | 🔴 Not started | Shaurya | `hw-dev` | Processing Element |
+| `rtl/systolic_array.v` | 🔴 Not started | Shaurya | `hw-dev` | NxN systolic array |
+| `sim/testbench.v` | 🟡 Placeholder | Shaurya | `hw-dev` | Verilog testbenches |
+| `synth/synth.ys` | 🟢 Written | Shaurya | `hw-dev` | Yosys synthesis script (SKY130) |
 
 ## Interface Specification (HW-SW Contract)
 <!-- This is the CRITICAL bridge between Aaditya and Shaurya's work -->
