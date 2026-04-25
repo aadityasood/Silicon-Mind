@@ -11,8 +11,7 @@ The model is designed to be hardware-friendly:
 The model is trained for 5 epochs to reach >98% accuracy.
 Final weights are saved to data/mnist_cnn.pth.
 
-Author: Flash (Silicon Mind Team)
-Auditor: Pro (Silicon Mind Team)
+Author: Aaditya Sood
 Date: 2026-04-18
 """
 
@@ -29,9 +28,10 @@ from typing import Tuple
 # These constants align with the HW-SW interface specification
 INPUT_CHANNELS = 1
 NUM_CLASSES = 10
-EPOCHS = 5
-BATCH_SIZE = 64
-LEARNING_RATE = 0.001
+DEFAULT_EPOCHS = 5
+DEFAULT_BATCH_SIZE = 64
+DEFAULT_LEARNING_RATE = 0.001
+RANDOM_SEED = 42
 IMAGE_SIZE = 28
 MNIST_MEAN = 0.1307
 MNIST_STD = 0.3081
@@ -70,7 +70,7 @@ class SiliconMindCNN(nn.Module):
     easy mapping to the systolic array in hardware.
     """
     def __init__(self) -> None:
-        super(SiliconMindCNN, self).__init__()
+        super().__init__()
         
         # Layer 1: Feature Extraction
         # Input: [1, 28, 28] | Output: [16, 14, 14]
@@ -125,6 +125,7 @@ def get_dataloaders(batch_size: int) -> Tuple[DataLoader, DataLoader]:
     Download and prepare MNIST train and test dataloaders.
     
     Includes standard normalization for MNIST.
+    Uses a generator for reproducible shuffling.
     """
     transform = transforms.Compose([
         transforms.ToTensor(),
@@ -135,7 +136,11 @@ def get_dataloaders(batch_size: int) -> Tuple[DataLoader, DataLoader]:
     train_set = datasets.MNIST(root=DATA_DIR, train=True, download=True, transform=transform)
     test_set = datasets.MNIST(root=DATA_DIR, train=False, download=True, transform=transform)
     
-    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True)
+    # Seeded generator for reproducible data ordering
+    g = torch.Generator()
+    g.manual_seed(RANDOM_SEED)
+    
+    train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, generator=g)
     test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False)
     
     return train_loader, test_loader
@@ -143,15 +148,22 @@ def get_dataloaders(batch_size: int) -> Tuple[DataLoader, DataLoader]:
 def train_model(
     model: nn.Module, 
     train_loader: DataLoader, 
+    test_loader: DataLoader,
     criterion: nn.Module, 
     optimizer: optim.Optimizer, 
-    device: torch.device
-) -> None:
+    device: torch.device,
+    epochs: int = DEFAULT_EPOCHS
+) -> float:
     """
-    Standard PyTorch training loop for a fixed number of epochs.
+    Standard PyTorch training loop with per-epoch evaluation.
+    
+    Returns the final test accuracy after training.
     """
-    model.train()
-    for epoch in range(EPOCHS):
+    best_accuracy = 0.0
+    
+    for epoch in range(epochs):
+        # --- Training Phase ---
+        model.train()
         running_loss = 0.0
         for i, (images, labels) in enumerate(train_loader):
             images, labels = images.to(device), labels.to(device)
@@ -166,10 +178,16 @@ def train_model(
             
             # Periodic logging
             if (i + 1) % 100 == 0:
-                print(f"Epoch [{epoch+1}/{EPOCHS}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}")
+                print(f"Epoch [{epoch+1}/{epochs}], Step [{i+1}/{len(train_loader)}], Loss: {loss.item():.4f}")
         
         avg_loss = running_loss / len(train_loader)
-        print(f"--- Epoch {epoch+1} Complete. Average Loss: {avg_loss:.4f} ---")
+        
+        # --- Evaluation Phase (per-epoch) ---
+        accuracy = evaluate_model(model, test_loader, device)
+        best_accuracy = max(best_accuracy, accuracy)
+        print(f"--- Epoch {epoch+1} Complete. Avg Loss: {avg_loss:.4f} | Test Acc: {accuracy:.2f}% ---")
+    
+    return best_accuracy
 
 def evaluate_model(model: nn.Module, test_loader: DataLoader, device: torch.device) -> float:
     """
@@ -212,11 +230,17 @@ def test_architecture() -> None:
     
     print("[VERIFICATION] All sanity tests passed.\n")
 
-def main() -> None:
+def main(epochs: int = DEFAULT_EPOCHS, lr: float = DEFAULT_LEARNING_RATE, batch_size: int = DEFAULT_BATCH_SIZE) -> None:
     """
     Orchestrate the training process.
     """
     print("=== Silicon Mind: MNIST CNN Training ===")
+    print(f"    Epochs: {epochs} | LR: {lr} | Batch Size: {batch_size}")
+    
+    # Reproducibility: set all seeds
+    torch.manual_seed(RANDOM_SEED)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(RANDOM_SEED)
     
     # Sanity check architecture first
     test_architecture()
@@ -233,18 +257,14 @@ def main() -> None:
     # Initialize components
     model = SiliconMindCNN().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=lr)
     
     # Load dataset
-    train_loader, test_loader = get_dataloaders(BATCH_SIZE)
+    train_loader, test_loader = get_dataloaders(batch_size)
     
-    # Training phase
-    print(f"Starting training for {EPOCHS} epochs...")
-    train_model(model, train_loader, criterion, optimizer, device)
-    
-    # Evaluation phase
-    print("Evaluating final model performance...")
-    accuracy = evaluate_model(model, test_loader, device)
+    # Training phase with per-epoch evaluation
+    print(f"Starting training for {epochs} epochs...")
+    accuracy = train_model(model, train_loader, test_loader, criterion, optimizer, device, epochs)
     
     # Persistence
     print(f"Saving model weights to {MODEL_SAVE_PATH}...")
@@ -252,16 +272,19 @@ def main() -> None:
     
     # Final health check
     if accuracy >= 98.0:
-        print("Success: Model exceeds 98% accuracy target.")
+        print(f"\n✅ Success: Model achieved {accuracy:.2f}% accuracy (target: >98%).")
     else:
-        print("Note: Model accuracy below target. Consider adjusting learning rate or epochs.")
+        print(f"\n⚠️  Model accuracy {accuracy:.2f}% is below 98% target. Try: --epochs 10 or --lr 0.0005")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train or test the Silicon Mind MNIST CNN.")
     parser.add_argument('--test-only', action='store_true', help='Only run the architecture tests')
+    parser.add_argument('--epochs', type=int, default=DEFAULT_EPOCHS, help=f'Number of training epochs (default: {DEFAULT_EPOCHS})')
+    parser.add_argument('--lr', type=float, default=DEFAULT_LEARNING_RATE, help=f'Learning rate (default: {DEFAULT_LEARNING_RATE})')
+    parser.add_argument('--batch-size', type=int, default=DEFAULT_BATCH_SIZE, help=f'Batch size (default: {DEFAULT_BATCH_SIZE})')
     args = parser.parse_args()
     
     if args.test_only:
         test_architecture()
     else:
-        main()
+        main(epochs=args.epochs, lr=args.lr, batch_size=args.batch_size)
