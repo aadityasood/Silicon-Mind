@@ -48,7 +48,7 @@ results.xml
 # Yosys / Synthesis outputs (Shaurya's tools)
 *_gate.v
 *.blif
-*.json
+synth/*.json
 synth/*.log
 
 # OS files
@@ -83,3 +83,4 @@ condense_context.py
 docs/CHAT_SETUP.md
 docs/ACTIVE_SKILLS.md
 weekly
+results/audits/

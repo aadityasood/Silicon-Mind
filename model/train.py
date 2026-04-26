@@ -75,7 +75,7 @@ def _compute_spatial_size(image_size: int) -> int:
     """Programmatically compute the spatial size after conv+pool layers.
 
     This prevents silent shape mismatches if KERNEL_SIZE, PADDING, STRIDE,
-    or POOL_SIZE are ever changed. (GLM Audit Issue #1)
+    or POOL_SIZE are ever changed.
 
     Returns:
         The spatial dimension after both conv+pool stages.
@@ -123,7 +123,7 @@ class SiliconMindCNN(nn.Module):
         )
 
         # QAT stubs — required for torch.ao.quantization workflow
-        # (Pro Audit Issue #2, interface_spec.md §1)
+        #
         self.quant = quant.QuantStub()
         self.dequant = quant.DeQuantStub()
 
@@ -288,14 +288,14 @@ def train_model(
                     f"Loss: {loss.item():.4f}"
                 )
 
-        # Guard against empty DataLoader (GLM Audit Issue #8)
+        # Guard against empty DataLoader
         num_batches = len(train_loader)
         avg_loss = running_loss / num_batches if num_batches > 0 else 0.0
 
         # ── Evaluation Phase ──
         accuracy = evaluate_model(model, test_loader, device, epoch + 1)
 
-        # Save best model checkpoint (GLM Audit Issue #5)
+        # Save best model checkpoint
         if accuracy > best_accuracy:
             best_accuracy = accuracy
             best_state_dict = {k: v.cpu().clone() for k, v in model.state_dict().items()}
@@ -357,7 +357,7 @@ def test_architecture() -> None:
 
     Runs under torch.no_grad() with model.eval() to prevent unnecessary
     graph construction and ensure correct behavior if stateful layers
-    (e.g., Dropout) are ever added. (GLM Audit Issue #4)
+    (e.g., Dropout) are ever added.
 
     Cross-ref: docs/interface_spec.md §1 (Data Types),
                docs/interface_spec.md §8 (Layer Order)
@@ -380,7 +380,7 @@ def test_architecture() -> None:
         for name in ("conv1", "conv2", "fc1", "fc2"):
             assert name in layer_names, f"Required layer '{name}' missing from model."
 
-        # Test 3: QAT stubs are present (Pro Audit Issue #2)
+        # Test 3: QAT stubs are present
         assert hasattr(model, "quant") and isinstance(model.quant, quant.QuantStub), (
             "QuantStub missing — required for INT8 QAT pipeline."
         )
@@ -396,7 +396,7 @@ def test_architecture() -> None:
                     f"INT32 bias for hardware PE accumulation."
                 )
 
-        # Test 5: Post-ReLU activations are non-negative (Kimi Audit Issue #1)
+        # Test 5: Post-ReLU activations are non-negative
         x = test_input
         x = model.quant(x)
         x = model.relu1(model.conv1(x))
@@ -413,7 +413,7 @@ def _preflight_checks() -> None:
 
     Checks:
         - Data directory exists (creates if needed)
-        - Data directory is writable (Kimi Audit Issue #5)
+        - Data directory is writable
 
     Raises:
         PermissionError: If the data directory is not writable.
@@ -438,7 +438,7 @@ def _save_model_with_metadata(
     """Save model weights and a JSON metadata sidecar.
 
     The sidecar file records training configuration, accuracy, and timestamps
-    for traceability. (Kimi Audit Issue #4)
+    for traceability.
 
     Args:
         model: Trained model (should contain the best-epoch state dict).
@@ -487,14 +487,14 @@ def main(
     print("=== Silicon Mind: MNIST CNN Training ===")
     print(f"    Epochs: {epochs} | LR: {lr} | Batch Size: {batch_size}")
 
-    # ── Reproducibility: full determinism (GLM Audit Issue #2, Kimi #3) ──
+    # ── Reproducibility: full determinism ──
     torch.manual_seed(RANDOM_SEED)
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(RANDOM_SEED)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    # ── Pre-flight checks (Kimi Audit Issue #5) ──
+    # ── Pre-flight checks ──
     _preflight_checks()
 
     # ── Architecture sanity ──
