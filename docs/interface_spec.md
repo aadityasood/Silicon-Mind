@@ -49,8 +49,19 @@ FF    # -1
 ### Python Export Code (Aaditya writes this)
 ```python
 def export_weights_to_mem(weight_tensor, filepath):
-    """Export INT8 weight tensor to .mem file for Verilog $readmemh"""
-    flat = weight_tensor.flatten().numpy().astype(np.int8)
+    """Export INT8 weight tensor to .mem file for Verilog $readmemh.
+
+    Args:
+        weight_tensor: A quantized INT8 PyTorch tensor (torch.int8 or torch.qint8).
+        filepath: Output .mem file path.
+
+    Raises:
+        AssertionError: If tensor is not quantized to INT8.
+    """
+    assert weight_tensor.dtype in (torch.int8, torch.qint8), \
+        f"Expected quantized INT8 tensor, got {weight_tensor.dtype}. " \
+        f"Run quantization before export."
+    flat = weight_tensor.flatten().detach().cpu().numpy().astype(np.int8)
     with open(filepath, 'w') as f:
         for val in flat:
             # Convert signed int8 to unsigned hex (two's complement)

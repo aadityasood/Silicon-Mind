@@ -1,0 +1,45 @@
+{
+  "model": "SiliconMindCNN",
+  "dataset": "MNIST",
+  "timestamp": "2026-04-26T13:46:16+0530",
+  "learning_rate": 0.001,
+  "batch_size": 64,
+  "random_seed": 42,
+  "architecture": {
+    "conv1_out": 16,
+    "conv2_out": 32,
+    "fc1_out": 128,
+    "kernel_size": 3,
+    "num_classes": 10
+  },
+  "best_accuracy": 99.06,
+  "best_epoch": 4,
+  "total_epochs": 5,
+  "history": [
+    {
+      "epoch": 1,
+      "avg_loss": 0.1692494933879666,
+      "test_acc": 98.0
+    },
+    {
+      "epoch": 2,
+      "avg_loss": 0.050744337572612916,
+      "test_acc": 98.82
+    },
+    {
+      "epoch": 3,
+      "avg_loss": 0.035455101097848066,
+      "test_acc": 98.7
+    },
+    {
+      "epoch": 4,
+      "avg_loss": 0.02778144985970322,
+      "test_acc": 99.06
+    },
+    {
+      "epoch": 5,
+      "avg_loss": 0.021509660611875845,
+      "test_acc": 98.75
+    }
+  ]
+}
