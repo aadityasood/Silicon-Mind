@@ -1,7 +1,7 @@
 # 🧠 PROJECT CONTEXT — Silicon Mind
-<!-- LAST UPDATED: 2026-04-25 -->
+<!-- LAST UPDATED: 2026-05-02 -->
 <!-- UPDATE THIS FILE after every significant coding session -->
-<!-- ANY agent can read this file to understand the full project state -->
+<!-- Use this file to understand the full project state -->
 
 ## Project Identity
 - **Name:** Silicon Mind  
@@ -12,7 +12,7 @@
 ## Current Phase
 - **Phase:** 1 — Foundation
 - **Sprint:** CNN Pipeline (Adi) + Systolic Array (Shaurya)
-- **Status:** 🟡 train.py written, awaiting quantization pipeline. Shaurya has placeholders.
+- **Status:** 🟡 Software export and golden-model verification pass locally. Shaurya's hardware branch needs rebase before merge.
 
 ## Architecture Summary
 ```
@@ -55,7 +55,7 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 | D3 | Simulation-first, deploy later | Remove all bugs before touching hardware | 2026-04-18 |
 | D4 | Hand-crafted Verilog (no HLS/FINN/Vitis AI) | Shows deeper understanding for portfolio | 2026-04-18 |
 | D5 | Board TBD | All simulation work is board-independent | 2026-04-18 |
-| D6 | Multi-agent coding workflow | Flash writes → Pro audits → Opus final review | 2026-04-18 |
+| D6 | Review-before-merge workflow | Draft changes are reviewed before stable-branch merge | 2026-04-18 |
 | D7 | Accept Shaurya's folder structure (sim/, synth/) | Standard FPGA/ASIC conventions, no conflict with verification/ | 2026-04-25 |
 | D8 | 3-branch git workflow (main, dev, hw-dev) | Clear ownership prevents merge conflicts | 2026-04-25 |
 | D9 | RISC-V SoC architecture (RV32I core from scratch) | More impressive for portfolio. Shaurya has MIPS32 experience. Custom ISA extensions later. | 2026-04-25 |
@@ -63,8 +63,8 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 ## Completed Work
 - [x] Project plan created (implementation_plan.md)
 - [x] Directory structure set up
-- [x] Context management system built
-- [x] Agent prompt system designed
+- [x] Project context system built
+- [x] Review handoff process documented
 - [x] model/train.py written (MNIST CNN)
 - [x] Dual-branch weekly workflow (v2) — reviews dev + hw-dev
 - [x] Git strategy updated for 3-branch model
@@ -72,8 +72,8 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 - [ ] Train the model (run train.py)
 - [ ] model/quantize.py — QAT pipeline
 - [ ] model/im2col.py — im2col transform
-- [ ] model/export.py — weight export to .mem
-- [ ] model/golden_model.py — bit-exact integer reference
+- [x] model/export.py — weight export to .mem
+- [x] model/golden_model.py — bit-exact integer reference
 - [ ] driver/main.c — C driver for RISC-V (Phase 3)
 - [ ] ... (update as work progresses)
 
@@ -82,7 +82,7 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 | File | Status | Owner | Branch | Description |
 |:-----|:-------|:------|:-------|:------------|
 | `model/train.py` | 🟢 Written | Aaditya | `dev` | CNN training script |
-| `model/quantize.py` | 🔴 Not started | Aaditya | `dev` | QAT quantization pipeline |
+| `model/quantize.py` | 🟢 Written | Aaditya | `dev` | QAT quantization pipeline |
 | `rtl/mac.v` | 🟡 Placeholder | Shaurya | `hw-dev` | MAC unit |
 | `rtl/pe.v` | 🔴 Not started | Shaurya | `hw-dev` | Processing Element |
 | `rtl/systolic_array.v` | 🔴 Not started | Shaurya | `hw-dev` | NxN systolic array |
@@ -142,9 +142,3 @@ Base Address: 0x10000000
 | Array Utilization | >80% DSP usage | For chosen array size |
 | Inference Latency | TBD | Benchmark on FPGA |
 | Custom ISA Speedup | TBD | vs base RV32I driver (Phase 5) |
-
-## Agent Workflow
-- **Primary Agent (Opus):** Architecture decisions, complex logic, final audit
-- **Code Writer (Flash):** Boilerplate, initial implementations
-- **Code Auditor (Pro):** Review, improve, catch bugs
-- **Context File:** THIS FILE — always read first, always update last

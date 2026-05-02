@@ -111,8 +111,8 @@ def load_mem_file(
 
 def requantize(
     acc: np.ndarray,
-    multiplier: int,
-    shift: int,
+    multiplier,
+    shift,
     zero_point: int,
 ) -> np.ndarray:
     """Hardware-accurate requantization: INT32 accumulator → INT8 output.
@@ -126,10 +126,17 @@ def requantize(
     NOTE: Operator precedence — multiplication before shift, shift before
     zero_point addition. Parentheses are critical.
 
+    Supports both per-tensor (scalar) and per-channel (list/array)
+    multiplier/shift values. For per-channel, each output channel c uses
+    multiplier[c] and shift[c]. The hardware has a per-PE requantization
+    unit so this matches the HW contract.
+
     Args:
-        acc: INT32 accumulator values.
-        multiplier: Fixed-point multiplier (unsigned, up to 32 bits).
-        shift: Right-shift amount (0 to 31).
+        acc: INT32 accumulator values, shape (C_out, N) or (C_out,).
+        multiplier: Fixed-point multiplier — scalar (int) for per-tensor,
+                    or list/array of length C_out for per-channel.
+        shift: Right-shift amount — scalar (int) for per-tensor,
+               or list/array of length C_out for per-channel.
         zero_point: Output zero point (added after shift).
 
     Returns:
@@ -137,10 +144,23 @@ def requantize(
 
     Cross-ref: docs/interface_spec.md §1 (scale_factor, shift_amount)
     """
-    # Use INT64 intermediate to prevent overflow during multiplication
-    # (hardware would use a wider multiplier register)
-    result = acc.astype(np.int64) * np.int64(multiplier)
-    result = result >> shift
+    acc64 = acc.astype(np.int64)
+
+    if isinstance(multiplier, (list, np.ndarray)):
+        # Per-channel: reshape to (C_out, 1) for broadcasting over spatial dim
+        m = np.array(multiplier, dtype=np.int64)
+        s = np.array(shift, dtype=np.int64)
+        if acc64.ndim == 2:
+            m = m.reshape(-1, 1)
+            s = s.reshape(-1, 1)
+        result = acc64 * m
+        # Per-element shift: NumPy >> works element-wise with arrays
+        result = result >> s
+    else:
+        # Per-tensor: scalar multiply and shift
+        result = acc64 * np.int64(multiplier)
+        result = result >> int(shift)
+
     result = result + np.int64(zero_point)
     return np.clip(result, INT8_MIN, INT8_MAX).astype(np.int8)
 

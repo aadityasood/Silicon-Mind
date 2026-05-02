@@ -71,16 +71,5 @@ scratch/
 data/*.tar.gz
 data/*.zip
 
-# Condensed context (generated file)
+# Generated handoff context
 context_for_shaurya.txt
-
-# ═══ Internal workflow files (keep local, don't push to GitHub) ═══
-# These are YOUR tools, not part of the project deliverable
-AGENT_SYSTEM.md
-STAGING.md
-WEEKLY_REVIEW.md
-condense_context.py
-docs/CHAT_SETUP.md
-docs/ACTIVE_SKILLS.md
-weekly
-results/audits/

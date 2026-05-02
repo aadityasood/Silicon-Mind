@@ -5,7 +5,7 @@
 
 | When | What to Commit | Branch |
 |:-----|:---------------|:-------|
-| **After Opus approves code** | The approved file(s) | `main` |
+| **After weekly review approves code** | The approved file(s) | `main` |
 | **End of Adi's coding session** | WIP progress (even if incomplete) | `dev` |
 | **End of Shaurya's coding session** | WIP hardware progress | `hw-dev` |
 | **Weekend review** | Cleanup + merge approved work | `main` (merge from dev & hw-dev) |
@@ -22,7 +22,7 @@ hw-dev ────────────●───●───●───�
 ```
 
 **THREE branches:**
-- **`main`** — Contains only Opus-reviewed, working code from BOTH contributors. This is what goes on your GitHub profile. Every commit here should compile/run without errors.
+- **`main`** — Contains only reviewed, working code from BOTH contributors. This is what goes on your GitHub profile. Every commit here should compile/run without errors.
 - **`dev`** — Adi's daily software work branch. Commit freely here, even broken code.
 - **`hw-dev`** — Shaurya's daily hardware work branch. Commit freely here, even broken code.
 
@@ -40,7 +40,7 @@ hw-dev ────────────●───●───●───�
 silicon-mind/
 ├── model/            ← Adi (PyTorch training, quantization)
 ├── verification/     ← Adi (cocotb Python tests)
-├── driver/           ← Adi (PYNQ driver)
+├── driver/           ← Adi (RISC-V C driver)
 ├── scripts/          ← Adi (utility scripts)
 ├── rtl/              ← Shaurya (Verilog modules: pe.v, systolic_array.v)
 ├── sim/              ← Shaurya (Verilog testbenches)
@@ -96,20 +96,19 @@ git commit -m "feat: description"
 git push origin hw-dev
 ```
 
-### Weekend Review Workflow (After Opus Reviews Both Branches)
+### Weekend Review Workflow (After Both Branches Are Reviewed)
 ```bash
 # Step 1: Run the weekly review generator
 ./weekly
 
-# Step 2: Paste output into the Opus Overseer (Antigravity) chat
-# Opus will review both branches and tell you which to merge
+# Step 2: Review the output and decide which branches are safe to merge
 
-# Step 3: If Opus approves dev:
+# Step 3: If dev is approved:
 git checkout main
 git merge origin/dev
 git push origin main
 
-# Step 4: If Opus approves hw-dev:
+# Step 4: If hw-dev is approved:
 git checkout main
 git merge origin/hw-dev
 git push origin main
@@ -118,7 +117,7 @@ git push origin main
 git checkout dev
 
 # Step 6: Tell Shaurya to rebase his branch (if main was updated)
-# Shaurya runs: git checkout hw-dev && git rebase main && git push -f origin hw-dev
+# Shaurya runs: git checkout hw-dev && git rebase main && git push --force-with-lease origin hw-dev
 ```
 
 ### Milestone Tags
@@ -185,7 +184,7 @@ These are in `.gitignore` but worth remembering:
 
 **Both, on different branches:**
 - **Commit to `dev`/`hw-dev` IMMEDIATELY** after every coding session. Even broken code. This is your safety net — you can always go back.
-- **Commit to `main` only AFTER Opus weekend review.** This keeps `main` clean and professional.
+- **Commit to `main` only AFTER weekly review.** This keeps `main` clean and professional.
 
 Your GitHub profile shows `main` branch commits. So `main` = portfolio quality. `dev`/`hw-dev` = your working notebooks.
 
