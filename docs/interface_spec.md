@@ -124,7 +124,7 @@ Input Image → [Conv1 → ReLU → Pool] → [Conv2 → ReLU → Pool] → [FC1
             (im2col'd)               (im2col'd)             (direct matmul)  (direct matmul)
 ```
 
-Each layer's output becomes the next layer's input. The ARM CPU (or software in simulation) orchestrates this sequence.
+Each layer's output becomes the next layer's input. The RISC-V CPU (or software in simulation) orchestrates this sequence.
 
 ## 9. Verification Contract
 
@@ -146,4 +146,4 @@ verification/test_vectors/
 
 | Version | Date | Change | Author |
 |:--------|:-----|:-------|:-------|
-| 1.0 | 2026-04-18 | Initial specification | Aaditya Sood + Antigravity |
+| 1.0 | 2026-04-18 | Initial specification | Aaditya Sood + Shaurya Gupta |
