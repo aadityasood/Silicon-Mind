@@ -1,5 +1,5 @@
 # 🧠 PROJECT CONTEXT — Silicon Mind
-<!-- LAST UPDATED: 2026-05-02 -->
+<!-- LAST UPDATED: 2026-05-15 -->
 <!-- UPDATE THIS FILE after every significant coding session -->
 <!-- Use this file to understand the full project state -->
 
@@ -12,7 +12,7 @@
 ## Current Phase
 - **Phase:** 1 — Foundation
 - **Sprint:** CNN Pipeline (Adi) + Systolic Array (Shaurya)
-- **Status:** 🟡 Software export and golden-model verification pass locally. Shaurya's hardware branch needs rebase before merge.
+- **Status:** Software export and golden-model verification pass locally. Hardware work may appear on `hw-dev` as WIP scaffolding, but merge to `main` requires reviewed implementation.
 
 ## Architecture Summary
 ```
@@ -57,16 +57,17 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 | D5 | Board TBD | All simulation work is board-independent | 2026-04-18 |
 | D6 | Review-before-merge workflow | Draft changes are reviewed before stable-branch merge | 2026-04-18 |
 | D7 | Accept Shaurya's folder structure (sim/, synth/) | Standard FPGA/ASIC conventions, no conflict with verification/ | 2026-04-25 |
-| D8 | 3-branch git workflow (main, dev, hw-dev) | Clear ownership prevents merge conflicts | 2026-04-25 |
+| D8 | 3-branch git workflow (main, dev, hw-dev) | Clear ownership and review gates keep `main` stable | 2026-04-25 |
 | D9 | RISC-V SoC architecture (RV32I core from scratch) | More impressive for portfolio. Shaurya has MIPS32 experience. Custom ISA extensions later. | 2026-04-25 |
+| D10 | WIP branch scaffolding allowed, stable branch requires reviewed implementation | Contributor branches can show progress while `main` remains portfolio quality | 2026-05-15 |
 
 ## Completed Work
 - [x] Project plan created (implementation_plan.md)
 - [x] Directory structure set up
 - [x] Project context system built
-- [x] Review handoff process documented
+- [x] Review-before-merge process documented
 - [x] model/train.py written (MNIST CNN)
-- [x] Dual-branch weekly workflow (v2) — reviews dev + hw-dev
+- [x] Dual-branch weekly workflow — reviews dev + hw-dev
 - [x] Git strategy updated for 3-branch model
 - [x] Architecture upgraded to RISC-V SoC
 - [ ] Train the model (run train.py)
@@ -83,13 +84,13 @@ RISC-V Core executes C driver → orchestrates systolic array → inference resu
 |:-----|:-------|:------|:-------|:------------|
 | `model/train.py` | 🟢 Written | Aaditya | `dev` | CNN training script |
 | `model/quantize.py` | 🟢 Written | Aaditya | `dev` | QAT quantization pipeline |
-| `rtl/mac.v` | 🟡 Placeholder | Shaurya | `hw-dev` | MAC unit |
-| `rtl/pe.v` | 🔴 Not started | Shaurya | `hw-dev` | Processing Element |
-| `rtl/systolic_array.v` | 🔴 Not started | Shaurya | `hw-dev` | NxN systolic array |
-| `rtl/riscv/` | 🔴 Not started | Shaurya | `hw-dev` | RISC-V core (Phase 2) |
-| `sim/testbench.v` | 🟡 Placeholder | Shaurya | `hw-dev` | Verilog testbenches |
-| `synth/synth.ys` | 🟢 Written | Shaurya | `hw-dev` | Yosys synthesis script |
-| `driver/main.c` | 🔴 Not started | Aaditya | `dev` | C driver for RISC-V (Phase 3) |
+| `rtl/mac.v` | WIP scaffold | Shaurya | `hw-dev` | MAC unit |
+| `rtl/pe.v` | Not started | Shaurya | `hw-dev` | Processing Element |
+| `rtl/systolic_array.v` | Not started | Shaurya | `hw-dev` | NxN systolic array |
+| `rtl/riscv/` | Not started | Shaurya | `hw-dev` | RISC-V core (Phase 2) |
+| `sim/testbench.v` | WIP scaffold | Shaurya | `hw-dev` | Verilog testbenches |
+| `synth/synth.ys` | Written | Shaurya | `hw-dev` | Yosys synthesis script |
+| `driver/main.c` | Not started | Aaditya | `dev` | C driver for RISC-V (Phase 3) |
 
 ## Folder Ownership
 ```
@@ -132,6 +133,7 @@ Base Address: 0x10000000
 - [ ] FPGA board selection (any FPGA works now — no ARM needed)
 - [ ] Shaurya: RISC-V core scope agreement (RV32I minimum ISA)
 - [ ] Agree on memory-mapped accelerator interface addresses
+- [ ] Review `hw-dev` after rebase before any hardware merge to `main`
 
 ## Performance Targets
 | Metric | Target | Notes |
