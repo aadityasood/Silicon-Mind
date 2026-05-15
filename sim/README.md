@@ -1,10 +1,13 @@
-# Simulation Workspace
+# Simulation
 
-This folder is reserved for Shaurya's hardware simulation work on the `hw-dev` branch.
+RTL testbenches and simulation helpers live here.
 
-Planned contents:
-- Verilog testbenches for RTL modules.
-- Simulation-only helper files.
-- Small hardware bring-up checks that can be reviewed before merge.
+Use this directory for quick checks while the hardware is still changing:
+module-level testbenches first, then integration tests once the pieces start
+connecting cleanly.
 
-Do not place software tests, datasets, waveform dumps, or private workflow notes here.
+Conventions:
+- Name testbenches after the block under test, for example `tb_mac.v`.
+- Keep simulator commands simple and relative to the repo root.
+- Commit source testbenches and small input vectors only.
+- Do not commit waveform dumps, simulator build folders, or temporary logs.

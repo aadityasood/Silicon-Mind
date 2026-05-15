@@ -1,10 +1,13 @@
-# RTL Workspace
+# RTL
 
-This folder is reserved for Shaurya's hardware RTL work on the `hw-dev` branch.
+Synthesizable hardware source for Silicon Mind lives here.
 
-Planned contents:
-- Verilog modules for the RISC-V SoC hardware path.
-- Neural-network accelerator RTL.
-- Small, reviewable hardware blocks before integration.
+Keep this directory focused on design files: CPU blocks, accelerator blocks,
+interconnect glue, and small reusable modules. Testbenches belong in `sim/`;
+tool scripts and generated netlists belong outside the RTL source tree.
 
-Do not place software, datasets, generated synthesis outputs, or private workflow notes here.
+Conventions:
+- One main module per file when possible.
+- Name files after the module they define, for example `mac.v` or `pe.v`.
+- Prefer small blocks that can be simulated on their own before integration.
+- Keep generated files, datasets, and scratch notes out of this folder.
