@@ -1,59 +1,87 @@
-# Silicon Mind — Custom FPGA Systolic Array Accelerator
+# Silicon Mind - Custom RISC-V Neural Accelerator
 
-> A custom-designed FPGA-based systolic array accelerator for CNN inference, built from scratch in PyTorch (software) and Verilog (hardware).
+Silicon Mind is a hardware-software co-design project that builds a custom
+RISC-V SoC with an INT8 neural-network accelerator. The software stack trains
+and exports quantized neural-network weights; the hardware stack implements the
+accelerator and processor-side integration for FPGA deployment.
 
-## 🎯 Project Overview
+## Project Overview
 
-**Silicon Mind** is a hardware-software co-design project that takes a Convolutional Neural Network, quantizes it to INT8 precision, and runs inference on a custom systolic array implemented on an FPGA.
+| Area | Scope |
+|:--|:--|
+| Software | PyTorch CNN, INT8 quantization, im2col, `.mem` export, golden model |
+| Hardware | Verilog systolic array, RV32I core, testbenches, synthesis flow |
+| Interface | Memory-mapped accelerator registers and `.mem` test vectors |
+| Target | Simulation first, then FPGA board selection and deployment |
 
-| | |
-|:---|:---|
-| **Software** | PyTorch CNN → INT8 Quantization → Weight Export |
-| **Hardware** | Verilog Systolic Array → FPGA Bitstream |
-| **Bridge** | im2col transform + cocotb verification |
-| **Target** | PYNQ-Z2 / Zynq SoC (TBD) |
+## Architecture
 
-## 📁 Project Structure
-
+```text
+PyTorch CNN
+  -> INT8 quantization
+  -> im2col / tiled matrix form
+  -> .mem weight and test-vector export
+  -> Verilog simulation
+  -> RISC-V C driver
+  -> FPGA accelerator execution
 ```
+
+The hardware path uses signed INT8 activations and weights, signed INT32
+accumulators, and fixed-point requantization back to INT8.
+
+## Repository Structure
+
+```text
 silicon-mind/
-├── model/              # CNN training, quantization, weight export
-├── rtl/                # Verilog RTL source code
-├── verification/       # cocotb testbenches and test vectors
-├── driver/             # PYNQ deployment driver
-├── docs/               # Architecture docs, interface spec
-├── scripts/            # Build and automation scripts
-└── results/            # Performance benchmarks
+├── model/          Python model, quantization, export, golden reference
+├── data/           Exported weights, metadata, and test data
+├── docs/           Architecture and hardware-software interface docs
+├── rtl/            Verilog RTL modules
+├── sim/            Verilog simulation testbenches
+├── synth/          Synthesis scripts and constraints
+├── verification/   cocotb tests and generated test vectors
+├── driver/         RISC-V C driver
+└── results/        Simulation, synthesis, and benchmark outputs
 ```
 
-## 🚀 Quick Start
+Some directories are introduced as the project reaches later phases.
+
+## Quick Start
 
 ```bash
-# Set up Python environment
-python3 -m venv .venv && source .venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 pip install torch torchvision numpy matplotlib cocotb
-
-# Train the CNN
-python model/train.py
-
-# Run hardware simulation tests
-cd verification && make
 ```
 
-## 🏗️ Architecture
+Verify exported model artifacts:
 
-```
-Input Image → im2col → Tiled MatMul → Systolic Array (FPGA) → Requantize → Output
-                                            ↑
-                                    INT8 weights loaded
-                                    from .mem files
+```bash
+.venv/bin/python -c 'from model.export import verify_export; verify_export()'
+.venv/bin/python -m model.golden_model
 ```
 
-## 👥 Team
+Train or regenerate model artifacts when needed:
 
-- **Aaditya Sood** — AI/ML, software stack, verification
-- **Shaurya Gupta** — Hardware design, Verilog RTL, FPGA synthesis
+```bash
+.venv/bin/python model/train.py
+.venv/bin/python model/quantize.py
+.venv/bin/python model/export.py
+```
 
-## 📄 License
+## Team
+
+- Aaditya Sood - AI/ML, software stack, verification, driver integration
+- Shaurya Gupta - Verilog RTL, RISC-V hardware, FPGA synthesis
+
+## Development Policy
+
+- `main` contains reviewed, working project milestones.
+- `dev` contains Aaditya's software work.
+- `hw-dev` contains Shaurya's hardware work.
+- Draft scaffolding is acceptable on development branches, but merge to `main`
+  requires reviewed implementation and passing verification.
+
+## License
 
 MIT License
